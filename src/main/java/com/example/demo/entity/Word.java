@@ -13,14 +13,21 @@ public class Word {
     @Column(name = "first_form")
     private String first_form;
 
-    @Column(name = "list_id")
-    private String list_id;
+    @ManyToOne
+    @JoinColumn(name = "list_id")
+    private List list;
 
     @Column(name = "meaning")
     private String meaning;
 
     @Column(name = "second_form")
     private String second_form;
+
+    @Column(name = "transcription")
+    private String transcription;
+
+    @Column(name = "translation")
+    private String translation;
 
     public Integer getId() {
         return id;
@@ -38,12 +45,12 @@ public class Word {
         this.first_form = first_form;
     }
 
-    public String getList_id() {
-        return list_id;
+    public List getList() {
+        return list;
     }
 
-    public void setList_id(String list_id) {
-        this.list_id = list_id;
+    public void setList(List list) {
+        this.list = list;
     }
 
     public String getMeaning() {
@@ -77,11 +84,5 @@ public class Word {
     public void setTranslation(String translation) {
         this.translation = translation;
     }
-
-    @Column(name = "transcription")
-    private String transcription;
-
-    @Column(name = "translation")
-    private String translation;
 
 }

@@ -10,6 +10,10 @@ public class Owner {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @OneToMany
+    @JoinColumn(name = "owner_id")
+    private List list;
+
     @Column(name = "name")
     private String name;
 

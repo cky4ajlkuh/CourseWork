@@ -10,8 +10,21 @@ public class List {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "owner_id")
-    private String owner_id;
+    @ManyToOne
+    @JoinColumn(name = "owner_id")
+    private Owner owner;
+
+    @OneToMany
+    @JoinColumn(name = "list_id")
+    private Word word;
+
+    public Owner getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Owner owner) {
+        this.owner = owner;
+    }
 
     public Integer getId() {
         return id;
@@ -21,11 +34,4 @@ public class List {
         this.id = id;
     }
 
-    public String getOwner_id() {
-        return owner_id;
-    }
-
-    public void setOwner_id(String owner_id) {
-        this.owner_id = owner_id;
-    }
 }

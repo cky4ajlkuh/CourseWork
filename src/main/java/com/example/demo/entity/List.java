@@ -14,8 +14,7 @@ public class List {
     @JoinColumn(name = "owner_id")
     private Owner owner;
 
-    @OneToMany
-    @JoinColumn(name = "list_id")
+    @OneToMany(mappedBy = "list")
     private Word word;
 
     public Owner getOwner() {

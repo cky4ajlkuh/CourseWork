@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "list")
@@ -15,7 +16,7 @@ public class List {
     private Owner owner;
 
     @OneToMany(mappedBy = "list")
-    private Word word;
+    private Set<Word> words;
 
     public Owner getOwner() {
         return owner;
@@ -33,4 +34,11 @@ public class List {
         this.id = id;
     }
 
+    public Set<Word> getWords() {
+        return words;
+    }
+
+    public void setWords(Set<Word> words) {
+        this.words = words;
+    }
 }

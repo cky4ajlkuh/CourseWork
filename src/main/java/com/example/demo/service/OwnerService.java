@@ -14,4 +14,12 @@ public class OwnerService {
     public Owner findByID(Integer id) {
         return ownerRepository.getById(id);
     }
+
+    public Owner findByName(String name) {
+        return ownerRepository.findByName(name);
+    }
+
+    public Owner create(String name) {
+        return ownerRepository.save(new Owner(name));
+    }
 }

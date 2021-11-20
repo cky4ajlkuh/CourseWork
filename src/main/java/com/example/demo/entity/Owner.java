@@ -17,6 +17,13 @@ public class Owner {
     @Column(name = "name")
     private String name;
 
+    public Owner(String name) {
+        this.name = name;
+    }
+    public Owner(){
+
+    }
+
     public Set<List> getLists() {
         return lists;
     }

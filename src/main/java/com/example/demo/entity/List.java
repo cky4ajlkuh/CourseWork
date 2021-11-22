@@ -11,7 +11,7 @@ public class List {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "owner_id")
     private Owner owner;
 

@@ -40,8 +40,8 @@ public class StartWindow extends JFrame {
                         Owner owner;
                         owner = ownerService.findByName(insertLogin.getText());
                         if (owner != null) {
+                            new BasicWindow(owner);
                             dispose();
-                            new BasicWindow();
                         }
                     }
                 } catch (Exception exception) {
@@ -60,15 +60,15 @@ public class StartWindow extends JFrame {
 
         create.addMouseListener(new MouseAdapter() {
             Owner owner;
+
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (createLogin.getText() != null) {
                     owner = ownerService.findByName(createLogin.getText());
                     if (owner == null) {
                         owner = ownerService.create(createLogin.getText());
-                        BasicWindow.owner = owner;
+                        new BasicWindow(owner);
                         dispose();
-                        new BasicWindow();
                     }
                 }
             }

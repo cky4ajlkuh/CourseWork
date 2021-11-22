@@ -2,6 +2,7 @@ package com.example.demo.design;
 
 import com.example.demo.entity.List;
 import com.example.demo.entity.Owner;
+import com.example.demo.entity.Word;
 import com.example.demo.service.OwnerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -9,14 +10,12 @@ import org.springframework.stereotype.Component;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.util.Set;
 
 @Component
 public class BasicWindow extends JFrame {
+
     @Autowired
     private OwnerService ownerService;
-    public static Owner owner = new Owner();
-    private final static Set<List> setList = owner.getLists();
 
     private final static JButton search = new JButton("Найти");
     private final static JButton deleteList = new JButton("Удалить список");
@@ -25,19 +24,20 @@ public class BasicWindow extends JFrame {
     private final static JButton deleteWord = new JButton("Удалить слово");
     private final static JTextField searchWord = new JTextField();
     private final static JLabel greeting = new JLabel("Чтобы найти неправильный глагол, введите его!");
-    private final static JLabel idOwner = new JLabel("id: " + owner.getId());
+    private final static JLabel idOwner = new JLabel("id: ");
     private final static DefaultTableModel tableModelList = new DefaultTableModel();
     private final static Object[] columnsHeader = new String[]{"infinitive", "Past Simple", "Past Participle", "Перевод"};
     private final static JPanel basicPanel = new JPanel();
-    
-    public BasicWindow() {
 
-        JComboBox comboList = new JComboBox(setLists());
+    public BasicWindow(Owner owner) {
+
+        JComboBox comboList = new JComboBox(new String[]{" "});
 
         tableModelList.setColumnIdentifiers(columnsHeader);
         JTable tableList = new JTable(tableModelList);
         JScrollPane pane = new JScrollPane(tableList);
         pane.setPreferredSize(new Dimension(750, 400));
+        List list = owner.getLists();
 
         basicPanel.add(idOwner);
         basicPanel.add(change);
@@ -97,17 +97,21 @@ public class BasicWindow extends JFrame {
 
     }
 
-    private String[] setLists() {
-        String[] lists = new String[owner.getLists().size()];
-        for (int i = 0; i < owner.getLists().size(); i++) {
-            lists[i] = "Лист №" + i + 1;
+    private void setList(List list) {
+        if (!list.getWords().isEmpty()) {
+            for (Word word : list.getWords()) {
+                String first_form = word.getFirst_form();
+                String second_form = word.getSecond_form();
+                String third_form = word.getThird_form();
+                String meaning = word.getMeaning();
+                //передать значения в таблицу
+            }
         }
-        return lists;
     }
+
 }
 
 class BW {
     public static void main(String[] args) {
-        new BasicWindow();
     }
 }

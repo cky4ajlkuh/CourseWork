@@ -23,11 +23,8 @@ public class Word {
     @Column(name = "second_form")
     private String second_form;
 
-    @Column(name = "transcription")
-    private String transcription;
-
-    @Column(name = "translation")
-    private String translation;
+    @Column(name = "third_form")
+    private String third_form;
 
     public Integer getId() {
         return id;
@@ -69,20 +66,11 @@ public class Word {
         this.second_form = second_form;
     }
 
-    public String getTranscription() {
-        return transcription;
+    public String getThird_form() {
+        return third_form;
     }
 
-    public void setTranscription(String transcription) {
-        this.transcription = transcription;
+    public void setThird_form(String third_form) {
+        this.third_form = third_form;
     }
-
-    public String getTranslation() {
-        return translation;
-    }
-
-    public void setTranslation(String translation) {
-        this.translation = translation;
-    }
-
 }

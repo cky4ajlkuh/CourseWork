@@ -18,6 +18,10 @@ public class List {
     @OneToMany(mappedBy = "list")
     private Set<Word> words;
 
+    public List() {
+
+    }
+
     public Owner getOwner() {
         return owner;
     }

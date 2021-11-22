@@ -21,7 +21,6 @@ public class Owner {
         this.name = name;
     }
     public Owner(){
-
     }
 
     public Set<List> getLists() {

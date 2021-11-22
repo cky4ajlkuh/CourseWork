@@ -29,8 +29,7 @@ public class BasicWindow extends JFrame {
     private final static DefaultTableModel tableModelList = new DefaultTableModel();
     private final static Object[] columnsHeader = new String[]{"infinitive", "Past Simple", "Past Participle", "Перевод"};
     private final static JPanel basicPanel = new JPanel();
-
-
+    
     public BasicWindow() {
 
         JComboBox comboList = new JComboBox(setLists());

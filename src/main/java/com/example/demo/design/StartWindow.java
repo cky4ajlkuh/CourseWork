@@ -41,6 +41,7 @@ public class StartWindow extends JFrame {
                         owner = ownerService.findByName(insertLogin.getText());
                         if (owner != null) {
                             new BasicWindow(owner);
+                            //перестал закрываться
                             dispose();
                         }
                     }
@@ -68,6 +69,7 @@ public class StartWindow extends JFrame {
                     if (owner == null) {
                         owner = ownerService.create(createLogin.getText());
                         new BasicWindow(owner);
+                        //перестал закрываться
                         dispose();
                     }
                 }

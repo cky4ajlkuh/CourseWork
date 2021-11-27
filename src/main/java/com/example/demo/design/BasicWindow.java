@@ -6,9 +6,10 @@ import com.example.demo.entity.Owner;
 import com.example.demo.entity.Word;
 import com.example.demo.service.ListService;
 import com.example.demo.service.WordService;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.transaction.Transactional;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -101,11 +102,14 @@ public class BasicWindow extends JFrame {
             setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         }
 
-        //checkList();
         search.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (!searchWord.getText().isEmpty()) {
+                    first_form.clear();
+                    second_form.clear();
+                    third_form.clear();
+                    meaning.clear();
                     try {
                         Word word = wordService.findByWord(searchWord.getText());
                         word = wordService.update(word, list);
@@ -113,20 +117,48 @@ public class BasicWindow extends JFrame {
                         setList(list);
                         model.fireTableDataChanged();
                     } catch (Exception exception) {
-                        JOptionPane.showMessageDialog(null, "Проверьте введенное слово!");
+                        JOptionPane.showMessageDialog(null, "Проверьте корректность ввода! \n Возможно, это не неправильный глагол!");
                     }
                 }
             }
+        });
 
+        deleteWord.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (!list.getWords().isEmpty()) {
+                    JFrame jFrame = new JFrame();
+                    String getMessage = JOptionPane.showInputDialog(jFrame, "Введите номер строки: ");
+                    int message = Integer.parseInt(getMessage);
+                    message = message - 1;
+                    if (message < list.getWords().size()) {
+                        try {
+                            //model.deleteRow(message);
+                            first_form.clear();
+                            second_form.clear();
+                            third_form.clear();
+                            meaning.clear();
+
+                            /*зная индекс столбца, можно найти элементы слова
+                              зная элементы слова, можно его найти в листе
+                              и удалить его из листа, задав параметры слова
+                             */
+                            list.deleteWord(message);
+                            setList(list);
+                            model.fireTableDataChanged();
+                        } catch (Exception exception) {
+                            JOptionPane.showMessageDialog(null, "Проверьте корректность ввода!");
+                        }
+
+                    }
+
+                }
+            }
         });
     }
 
     private void setList(List list) {
         model.setCount(list.getWords().size());
-        first_form.clear();
-        second_form.clear();
-        third_form.clear();
-        meaning.clear();
         for (Word word : list.getWords()) {
             first_form.add(word.getFirst_form());
             second_form.add(word.getSecond_form());
@@ -134,26 +166,5 @@ public class BasicWindow extends JFrame {
             meaning.add(word.getMeaning());
             model.fireTableDataChanged();
         }
-        /*
-        for (int i = 0; i < list.getWords().size(); i++) {
-            model.setValueAt(first_form.get(i), i, 0);
-            model.setValueAt(second_form.get(i), i, 1);
-            model.setValueAt(third_form.get(i), i, 2);
-            model.setValueAt(meaning.get(i), i, 3);
-        }*/
-    }
-
-    private void checkList() {
-        if (list.getWords().isEmpty()) {
-            list = new List();
-        } else {
-            setList(list);
-        }
-    }
-}
-
-class BW {
-    public static void main(String[] args) {
-        //new BasicWindow();
     }
 }

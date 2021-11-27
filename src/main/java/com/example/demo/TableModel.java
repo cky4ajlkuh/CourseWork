@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
 
@@ -84,5 +85,12 @@ public class TableModel extends AbstractTableModel {
             return meaning.get(rowIndex);
         }
         throw new UnsupportedOperationException();
+    }
+
+    public void deleteRow(int index){
+        first_form.remove(index);
+        second_form.remove(index);
+        third_form.remove(index);
+        meaning.remove(index);
     }
 }

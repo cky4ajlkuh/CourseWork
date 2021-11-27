@@ -67,7 +67,6 @@ public class StartWindow extends JFrame {
 
         create.addMouseListener(new MouseAdapter() {
             Owner owner;
-
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (createLogin.getText() != null) {

@@ -20,4 +20,5 @@ public class WordService {
         word.setList(list);
         return wordRepository.save(word);
     }
+
 }

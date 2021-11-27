@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -16,10 +17,9 @@ public class List {
     private Owner owner;
 
     @OneToMany(mappedBy = "list")
-    private Set<Word> words;
+    private Set<Word> words = new HashSet<>();
 
     public List() {
-
     }
 
     public Owner getOwner() {
@@ -46,7 +46,11 @@ public class List {
         this.words = words;
     }
 
-    public void setWord(Word word){
+    public void setWord(Word word) {
         words.add(word);
+    }
+
+    public void deleteWord(int index) {
+
     }
 }

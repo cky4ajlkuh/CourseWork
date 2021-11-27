@@ -1,10 +1,6 @@
 package com.example.demo.entity;
 
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-
 import javax.persistence.*;
-import java.util.Set;
 
 @Entity
 @Table(name = "owner")

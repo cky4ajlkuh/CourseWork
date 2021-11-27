@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.entity.List;
 import com.example.demo.entity.Owner;
 import com.example.demo.repository.OwnerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,4 +23,5 @@ public class OwnerService {
     public Owner create(String name) {
         return ownerRepository.save(new Owner(name));
     }
+
 }

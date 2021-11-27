@@ -45,4 +45,8 @@ public class List {
     public void setWords(Set<Word> words) {
         this.words = words;
     }
+
+    public void setWord(Word word){
+        words.add(word);
+    }
 }

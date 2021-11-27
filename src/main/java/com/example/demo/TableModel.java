@@ -20,6 +20,7 @@ public class TableModel extends AbstractTableModel {
         this.second_form = second_form;
         this.third_form = third_form;
         this.meaning = meaning;
+        this.count = meaning.size();
     }
 
     public void setCount(int size) {

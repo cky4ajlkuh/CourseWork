@@ -1,7 +1,9 @@
 package com.example.demo.design;
 
 import com.example.demo.entity.Owner;
+import com.example.demo.service.ListService;
 import com.example.demo.service.OwnerService;
+import com.example.demo.service.WordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +17,11 @@ public class StartWindow extends JFrame {
 
     @Autowired
     private OwnerService ownerService;
+    @Autowired
+    private WordService wordService;
+    @Autowired
+    private ListService listService;
+
     private final static JTextField createLogin = new JTextField(10);
     private final static JTextField insertLogin = new JTextField(10);
     private final static JLabel login = new JLabel("Логин: ");
@@ -40,9 +47,8 @@ public class StartWindow extends JFrame {
                         Owner owner;
                         owner = ownerService.findByName(insertLogin.getText());
                         if (owner != null) {
-                            new BasicWindow(owner);
-                            //перестал закрываться
                             dispose();
+                            new BasicWindow(owner, wordService, listService);
                         }
                     }
                 } catch (Exception exception) {
@@ -68,9 +74,8 @@ public class StartWindow extends JFrame {
                     owner = ownerService.findByName(createLogin.getText());
                     if (owner == null) {
                         owner = ownerService.create(createLogin.getText());
-                        new BasicWindow(owner);
-                        //перестал закрываться
                         dispose();
+                        new BasicWindow(owner, wordService, listService);
                     }
                 }
             }

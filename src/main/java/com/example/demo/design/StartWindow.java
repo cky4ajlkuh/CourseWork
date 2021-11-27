@@ -49,6 +49,7 @@ public class StartWindow extends JFrame {
                         if (owner != null) {
                             dispose();
                             new BasicWindow(owner, wordService, listService);
+                            insertLogin.setText("");
                         }
                     }
                 } catch (Exception exception) {
@@ -75,6 +76,7 @@ public class StartWindow extends JFrame {
                         owner = ownerService.create(createLogin.getText());
                         dispose();
                         new BasicWindow(owner, wordService, listService);
+                        createLogin.setText("");
                     }
                 }
             }

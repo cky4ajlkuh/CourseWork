@@ -116,6 +116,7 @@ public class BasicWindow extends JFrame {
                         list.setWord(word);
                         setList(list);
                         model.fireTableDataChanged();
+                        searchWord.setText("");
                     } catch (Exception exception) {
                         JOptionPane.showMessageDialog(null, "Проверьте корректность ввода! \n Возможно, это не неправильный глагол!");
                     }
@@ -155,7 +156,22 @@ public class BasicWindow extends JFrame {
                 }
             }
         });
+
+        change.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                dispose();
+                list = null;
+                id = 0;
+                first_form.clear();
+                second_form.clear();
+                third_form.clear();
+                meaning.clear();
+                new StartWindow();
+            }
+        });
     }
+
 
     private void setList(List list) {
         model.setCount(list.getWords().size());

@@ -10,5 +10,4 @@ import org.springframework.stereotype.Repository;
 public interface OwnerRepository extends JpaRepository<Owner, Integer> {
     @Query("select b from Owner b where b.name = :name")
     Owner findByName(@Param("name") String name);
-
 }

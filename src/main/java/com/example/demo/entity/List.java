@@ -49,8 +49,4 @@ public class List {
     public void setWord(Word word) {
         words.add(word);
     }
-
-    public void deleteWord(int index) {
-
-    }
 }

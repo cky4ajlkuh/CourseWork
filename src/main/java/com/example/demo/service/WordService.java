@@ -12,13 +12,12 @@ public class WordService {
     @Autowired
     private WordRepository wordRepository;
 
-    public Word findByWord(String word){
+    public Word findByWord(String word) {
         return wordRepository.findByWord(word);
     }
 
-    public Word update(Word word, List list){
+    public Word update(Word word, List list) {
         word.setList(list);
         return wordRepository.save(word);
     }
-
 }

@@ -8,12 +8,12 @@ import com.example.demo.service.ListService;
 import com.example.demo.service.WordService;
 
 import javax.swing.*;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
 import javax.transaction.Transactional;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.util.ArrayList;
 
 @Transactional
@@ -26,9 +26,11 @@ public class BasicWindow extends JFrame {
     private final static JButton search = new JButton("Найти");
     private final static JButton change = new JButton("Сменить пользователя");
     private final static JButton deleteWord = new JButton("Удалить слово");
+    private final static JButton saveList = new JButton("Сохранить список");
     private final static JTextField searchWord = new JTextField();
     private final static JLabel nameTable = new JLabel("Ваш список слов:");
-    private final static JLabel greeting = new JLabel("Чтобы найти неправильный глагол, введите его!");
+    private final static JLabel greetingFirst = new JLabel("Чтобы найти неправильный глагол, введите одну из его трех форм");
+    private final static JLabel greetingSecond = new JLabel("или введите его перевод без пробела и не с заглавной буквы!");
     private java.util.List<String> first_form = new ArrayList<>();
     private java.util.List<String> second_form = new ArrayList<>();
     private java.util.List<String> third_form = new ArrayList<>();
@@ -38,6 +40,7 @@ public class BasicWindow extends JFrame {
     private final static JPanel basicPanel = new JPanel();
 
     public BasicWindow(Owner owner, WordService wordService, ListService listService) {
+        setVisible(true);
         this.wordService = wordService;
         this.listService = listService;
         id = owner.getId();
@@ -56,11 +59,13 @@ public class BasicWindow extends JFrame {
 
         basicPanel.add(idOwner);
         basicPanel.add(change);
-        basicPanel.add(greeting);
+        basicPanel.add(greetingFirst);
+        basicPanel.add(greetingSecond);
         basicPanel.add(searchWord);
         basicPanel.add(search);
         basicPanel.add(nameTable);
         basicPanel.add(deleteWord);
+        basicPanel.add(saveList);
         basicPanel.add(pane);
 
         {
@@ -72,30 +77,38 @@ public class BasicWindow extends JFrame {
                     .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                             .addComponent(idOwner)
                             .addComponent(change))
-                    .addComponent(greeting)
+                    .addComponent(greetingFirst)
+                    .addComponent(greetingSecond)
                     .addGroup(layout.createSequentialGroup()
                             .addComponent(searchWord)
                             .addComponent(search))
                     .addComponent(nameTable)
                     .addComponent(pane)
-                    .addComponent(deleteWord)
+                    .addGroup(layout.createParallelGroup()
+                            .addComponent(deleteWord)
+                            .addComponent(saveList)
+                    )
             );
             layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                     .addGroup(layout.createSequentialGroup()
                             .addComponent(idOwner)
                             .addComponent(change))
-                    .addComponent(greeting)
+                    .addComponent(greetingFirst)
+                    .addComponent(greetingSecond)
                     .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                             .addComponent(searchWord)
                             .addComponent(search))
                     .addComponent(nameTable)
                     .addComponent(pane)
-                    .addComponent(deleteWord)
+                    .addGroup(layout.createSequentialGroup()
+                            .addComponent(deleteWord)
+                            .addComponent(saveList)
+                    )
+
             );
         }
 
         {
-            setVisible(true);
             add(basicPanel);
             setResizable(true);
             setSize(new Dimension(800, 800));
@@ -106,10 +119,7 @@ public class BasicWindow extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (!searchWord.getText().isEmpty()) {
-                    first_form.clear();
-                    second_form.clear();
-                    third_form.clear();
-                    meaning.clear();
+                    clearArray();
                     try {
                         Word word = wordService.findByWord(searchWord.getText());
                         word = wordService.update(word, list);
@@ -130,48 +140,65 @@ public class BasicWindow extends JFrame {
                 if (!list.getWords().isEmpty()) {
                     JFrame jFrame = new JFrame();
                     String getMessage = JOptionPane.showInputDialog(jFrame, "Введите номер строки: ");
-                    int message = Integer.parseInt(getMessage);
-                    message = message - 1;
-                    if (message < list.getWords().size()) {
+                    int rowNumber = Integer.parseInt(getMessage);
+                    rowNumber = rowNumber - 1;
+                    if (rowNumber < list.getWords().size()) {
                         try {
-                            //model.deleteRow(message);
-                            first_form.clear();
-                            second_form.clear();
-                            third_form.clear();
-                            meaning.clear();
-
-                            /*зная индекс столбца, можно найти элементы слова
-                              зная элементы слова, можно его найти в листе
-                              и удалить его из листа, задав параметры слова
-                             */
-                            list.deleteWord(message);
+                            clearArray();
+                            Word[] words = list.getWords().toArray(new Word[list.getWords().size()]);
+                            wordService.update(words[rowNumber], null);
+                            list = listService.findByID(list.getId());
                             setList(list);
                             model.fireTableDataChanged();
                         } catch (Exception exception) {
                             JOptionPane.showMessageDialog(null, "Проверьте корректность ввода!");
                         }
-
                     }
-
                 }
             }
         });
 
         change.addMouseListener(new MouseAdapter() {
             @Override
+            public void mousePressed(MouseEvent e) {
+                try {
+                    dispose();
+                    setVisible(false);
+                    new StartWindow();
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
+            }
+
+            @Override
             public void mouseClicked(MouseEvent e) {
-                dispose();
-                list = null;
-                id = 0;
-                first_form.clear();
-                second_form.clear();
-                third_form.clear();
-                meaning.clear();
-                new StartWindow();
+
+            }
+        });
+
+        saveList.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (!list.getWords().isEmpty()) {
+                    try {
+                        JFrame jFrame = new JFrame();
+                        String getMessage = JOptionPane.showInputDialog(jFrame, "Придумайте название файла: ");
+                        saveTable(getMessage);
+                        JOptionPane.showMessageDialog(null, "Ваш файл сохранен!");
+                    } catch (Exception exception) {
+                        JOptionPane.showMessageDialog(null, "Нельзя сохранить пустой лист!");
+                    }
+                }
             }
         });
     }
 
+    private void clearArray() {
+        first_form.clear();
+        second_form.clear();
+        third_form.clear();
+        meaning.clear();
+    }
 
     private void setList(List list) {
         model.setCount(list.getWords().size());
@@ -182,5 +209,21 @@ public class BasicWindow extends JFrame {
             meaning.add(word.getMeaning());
             model.fireTableDataChanged();
         }
+    }
+
+    public void saveTable(String nameFile) throws Exception {
+        BufferedWriter bfw = new BufferedWriter(new FileWriter(nameFile + ".txt"));
+        for (int i = 0; i < model.getColumnCount(); i++) {
+            bfw.write(model.getColumnName(i));
+            bfw.write("\t");
+        }
+        for (int i = 0; i < model.getRowCount(); i++) {
+            bfw.newLine();
+            for (int j = 0; j < model.getColumnCount(); j++) {
+                bfw.write((String) (model.getValueAt(i, j)));
+                bfw.write("\t");
+            }
+        }
+        bfw.close();
     }
 }

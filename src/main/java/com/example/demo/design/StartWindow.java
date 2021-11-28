@@ -47,9 +47,10 @@ public class StartWindow extends JFrame {
                         Owner owner;
                         owner = ownerService.findByName(insertLogin.getText());
                         if (owner != null) {
-                            dispose();
                             new BasicWindow(owner, wordService, listService);
                             insertLogin.setText("");
+                            setVisible(false);
+                            dispose();
                         }
                     }
                 } catch (Exception exception) {
@@ -68,15 +69,17 @@ public class StartWindow extends JFrame {
 
         create.addMouseListener(new MouseAdapter() {
             Owner owner;
+
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (createLogin.getText() != null) {
                     owner = ownerService.findByName(createLogin.getText());
                     if (owner == null) {
                         owner = ownerService.create(createLogin.getText());
-                        dispose();
                         new BasicWindow(owner, wordService, listService);
                         createLogin.setText("");
+                        setVisible(false);
+                        dispose();
                     }
                 }
             }
@@ -105,11 +108,5 @@ public class StartWindow extends JFrame {
         createPanel.add(createLogin);
         createPanel.add(create);
         return createPanel;
-    }
-}
-
-class SW {
-    public static void main(String[] args) {
-        new StartWindow();
     }
 }

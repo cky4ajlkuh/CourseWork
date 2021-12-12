@@ -36,7 +36,6 @@ public class BasicWindow extends JFrame {
     private java.util.List<String> third_form = new ArrayList<>();
     private java.util.List<String> meaning = new ArrayList<>();
     private TableModel model = new TableModel(first_form, second_form, third_form, meaning);
-    private JLabel idOwner;
     private final static JPanel basicPanel = new JPanel();
 
     public BasicWindow(Owner owner, WordService wordService, ListService listService) {
@@ -45,7 +44,7 @@ public class BasicWindow extends JFrame {
         this.listService = listService;
         id = owner.getId();
         list = owner.getLists();
-        idOwner = new JLabel("id: " + id);
+        JLabel idOwner = new JLabel("id: " + id);
 
         if (list == null) {
             list = listService.create(owner);
@@ -148,7 +147,7 @@ public class BasicWindow extends JFrame {
                             rowNumber = rowNumber - 1;
                             if (rowNumber < list.getWords().size()) {
                                 clearArray();
-                                Word[] words = list.getWords().toArray(new Word[list.getWords().size()]);
+                                Word[] words = list.getWords().toArray(new Word[0]);
                                 wordService.update(words[rowNumber], null);
                                 list = listService.findByID(list.getId());
                                 setList(list);

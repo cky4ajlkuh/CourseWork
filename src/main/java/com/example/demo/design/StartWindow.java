@@ -51,8 +51,13 @@ public class StartWindow extends JFrame {
                             insertLogin.setText("");
                             setVisible(false);
                             dispose();
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Проверьте Логин!");
                         }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Некорректное имя!");
                     }
+
                 } catch (Exception exception) {
                     JOptionPane.showMessageDialog(null, "Проверьте Логин!");
                 }
@@ -72,16 +77,25 @@ public class StartWindow extends JFrame {
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (createLogin.getText() != null) {
-                    owner = ownerService.findByName(createLogin.getText());
-                    if (owner == null) {
-                        owner = ownerService.create(createLogin.getText());
-                        new BasicWindow(owner, wordService, listService);
-                        createLogin.setText("");
-                        setVisible(false);
-                        dispose();
+                try {
+                    if (!createLogin.getText().isEmpty()) {
+                        owner = ownerService.findByName(createLogin.getText());
+                        if (owner == null) {
+                            owner = ownerService.create(createLogin.getText());
+                            new BasicWindow(owner, wordService, listService);
+                            createLogin.setText("");
+                            setVisible(false);
+                            dispose();
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Логин занят!");
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Некорректное имя!");
                     }
+                } catch (Exception exception) {
+                    JOptionPane.showMessageDialog(null, "Проверьте Логин! Возможно, он занят.");
                 }
+
             }
         });
     }

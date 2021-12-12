@@ -128,8 +128,10 @@ public class BasicWindow extends JFrame {
                         model.fireTableDataChanged();
                         searchWord.setText("");
                     } catch (Exception exception) {
-                        JOptionPane.showMessageDialog(null, "Проверьте корректность ввода! \n Возможно, это не неправильный глагол!");
+                        JOptionPane.showMessageDialog(null, "Проверьте корректность ввода!");
                     }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Проверьте корректность ввода! \n Возможно, это не неправильный глагол!");
                 }
             }
         });
@@ -140,20 +142,28 @@ public class BasicWindow extends JFrame {
                 if (!list.getWords().isEmpty()) {
                     JFrame jFrame = new JFrame();
                     String getMessage = JOptionPane.showInputDialog(jFrame, "Введите номер строки: ");
-                    int rowNumber = Integer.parseInt(getMessage);
-                    rowNumber = rowNumber - 1;
-                    if (rowNumber < list.getWords().size()) {
-                        try {
-                            clearArray();
-                            Word[] words = list.getWords().toArray(new Word[list.getWords().size()]);
-                            wordService.update(words[rowNumber], null);
-                            list = listService.findByID(list.getId());
-                            setList(list);
-                            model.fireTableDataChanged();
-                        } catch (Exception exception) {
-                            JOptionPane.showMessageDialog(null, "Проверьте корректность ввода!");
+                    if (!getMessage.isEmpty()) {
+                        int rowNumber = Integer.parseInt(getMessage);
+                        if (rowNumber != 0) {
+                            rowNumber = rowNumber - 1;
+                            if (rowNumber < list.getWords().size()) {
+                                clearArray();
+                                Word[] words = list.getWords().toArray(new Word[list.getWords().size()]);
+                                wordService.update(words[rowNumber], null);
+                                list = listService.findByID(list.getId());
+                                setList(list);
+                                model.fireTableDataChanged();
+                            } else {
+                                JOptionPane.showMessageDialog(null, "Проверьте корректность ввода!");
+                            }
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Нельзя удалить нулевую строку!");
                         }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Нельзя удалить пустую строку!");
                     }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Нельзя удалить пустой список!");
                 }
             }
         });
@@ -169,23 +179,22 @@ public class BasicWindow extends JFrame {
                     exception.printStackTrace();
                 }
             }
-
-            @Override
-            public void mouseClicked(MouseEvent e) {
-
-            }
         });
 
         saveList.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (!list.getWords().isEmpty()) {
-                    try {
-                        JFrame jFrame = new JFrame();
-                        String getMessage = JOptionPane.showInputDialog(jFrame, "Придумайте название файла: ");
-                        saveTable(getMessage);
+                    JFrame jFrame = new JFrame();
+                    String getMessage = JOptionPane.showInputDialog(jFrame, "Придумайте название файла: ");
+                    if (!getMessage.isEmpty()) {
+                        try {
+                            saveTable(getMessage);
+                        } catch (Exception exception) {
+                            exception.printStackTrace();
+                        }
                         JOptionPane.showMessageDialog(null, "Ваш файл сохранен!");
-                    } catch (Exception exception) {
+                    } else {
                         JOptionPane.showMessageDialog(null, "Нельзя сохранить пустой лист!");
                     }
                 }

@@ -93,6 +93,7 @@ public class StartWindow extends JFrame {
                         JOptionPane.showMessageDialog(null, "Некорректное имя!");
                     }
                 } catch (Exception exception) {
+                    exception.printStackTrace();
                     JOptionPane.showMessageDialog(null, "Проверьте Логин! Возможно, он занят.");
                 }
 

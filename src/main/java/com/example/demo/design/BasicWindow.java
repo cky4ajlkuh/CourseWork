@@ -15,12 +15,15 @@ import java.awt.event.MouseEvent;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 
 @Transactional
 public class BasicWindow extends JFrame {
 
     private WordService wordService;
     private ListService listService;
+    private HashMap<String, Word> mapWords = new HashMap<>();
     private List list;
     private static int id = 0;
     private final static JButton search = new JButton("Найти");
@@ -46,10 +49,13 @@ public class BasicWindow extends JFrame {
         list = owner.getLists();
         JLabel idOwner = new JLabel("id: " + id);
 
-        if (list == null) {
+        if (mapWords.isEmpty()) {
             list = listService.create(owner);
         } else {
-            setList(list);
+            for (Word word : list.getWords()) {
+                mapWords.put(word.getFirst_form(), word);
+            }
+            setList(mapWords);
         }
 
         JTable table = new JTable(model);
@@ -121,11 +127,16 @@ public class BasicWindow extends JFrame {
                     clearArray();
                     try {
                         Word word = wordService.findByWord(searchWord.getText());
-                        word = wordService.update(word, list);
-                        list.setWord(word);
-                        setList(list);
-                        model.fireTableDataChanged();
-                        searchWord.setText("");
+                        if (!mapWords.containsKey(word.getFirst_form())) {
+                            word = wordService.update(word, list);
+                            list.setWord(word);
+                            mapWords.put(word.getFirst_form(), word);
+                            setList(mapWords);
+                            model.fireTableDataChanged();
+                            searchWord.setText("");
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Слово уже есть в Листе!");
+                        }
                     } catch (Exception exception) {
                         JOptionPane.showMessageDialog(null, "Проверьте корректность ввода!");
                     }
@@ -149,8 +160,9 @@ public class BasicWindow extends JFrame {
                                 clearArray();
                                 Word[] words = list.getWords().toArray(new Word[0]);
                                 wordService.update(words[rowNumber], null);
+                                mapWords.remove(words[rowNumber].getFirst_form());
                                 list = listService.findByID(list.getId());
-                                setList(list);
+                                setList(mapWords);
                                 model.fireTableDataChanged();
                             } else {
                                 JOptionPane.showMessageDialog(null, "Проверьте корректность ввода!");
@@ -208,7 +220,17 @@ public class BasicWindow extends JFrame {
         meaning.clear();
     }
 
-    private void setList(List list) {
+    private void setList(HashMap<String, Word> mapWords) {
+        Collection<Word> collection = mapWords.values();
+        model.setCount(collection.size());
+        for (Word word : collection) {
+            first_form.add(word.getFirst_form());
+            second_form.add(word.getSecond_form());
+            third_form.add(word.getThird_form());
+            meaning.add(word.getMeaning());
+            model.fireTableDataChanged();
+        }
+        /*
         model.setCount(list.getWords().size());
         for (Word word : list.getWords()) {
             first_form.add(word.getFirst_form());
@@ -216,7 +238,7 @@ public class BasicWindow extends JFrame {
             third_form.add(word.getThird_form());
             meaning.add(word.getMeaning());
             model.fireTableDataChanged();
-        }
+        }*/
     }
 
     public void saveTable(String nameFile) throws Exception {

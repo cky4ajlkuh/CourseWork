@@ -21,6 +21,8 @@ public class StartWindow extends JFrame {
     private WordService wordService;
     @Autowired
     private ListService listService;
+    @Autowired
+    private BasicWindow basicWindow;
 
     private final static JTextField createLogin = new JTextField(10);
     private final static JTextField insertLogin = new JTextField(10);
@@ -49,8 +51,8 @@ public class StartWindow extends JFrame {
                     if (!insertLogin.getText().isEmpty()) {
                         owner = ownerService.findByName(insertLogin.getText());
                         if (owner != null) {
-                            window.dispose();
-                            new BasicWindow(owner, wordService, listService);
+                            setVisible(false);
+                            basicWindow.basicWindow(owner);
                         } else {
                             JOptionPane.showMessageDialog(null, "Проверьте Логин !");
                         }
@@ -82,10 +84,8 @@ public class StartWindow extends JFrame {
                         owner = ownerService.findByName(createLogin.getText());
                         if (owner == null) {
                             owner = ownerService.create(createLogin.getText());
-                            createLogin.setText("");
-                            setVisible(false);
-                            dispose();
-                            new BasicWindow(owner, wordService, listService);
+                            window.setVisible(false);
+                            basicWindow.basicWindow(owner);
                         } else {
                             JOptionPane.showMessageDialog(null, "Логин занят!");
                         }

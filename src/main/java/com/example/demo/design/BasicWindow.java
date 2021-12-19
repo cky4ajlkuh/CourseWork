@@ -5,7 +5,10 @@ import com.example.demo.entity.List;
 import com.example.demo.entity.Owner;
 import com.example.demo.entity.Word;
 import com.example.demo.service.ListService;
+import com.example.demo.service.OwnerService;
 import com.example.demo.service.WordService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import javax.transaction.Transactional;
@@ -18,14 +21,21 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
+@Component
 @Transactional
 public class BasicWindow extends JFrame {
 
+    @Autowired
     private WordService wordService;
+    @Autowired
     private ListService listService;
+    @Autowired
+    private StartWindow startWindow;
+    //private WordService wordService;
+    //private ListService listService;
     private HashMap<String, Word> mapWords = new HashMap<>();
     private List list;
-    private static int id = 0;
+    private JLabel idOwner = new JLabel();
     private final static JButton search = new JButton("Найти");
     private final static JButton change = new JButton("Сменить пользователя");
     private final static JButton deleteWord = new JButton("Удалить слово");
@@ -39,16 +49,30 @@ public class BasicWindow extends JFrame {
     private java.util.List<String> third_form = new ArrayList<>();
     private java.util.List<String> meaning = new ArrayList<>();
     private TableModel model = new TableModel(first_form, second_form, third_form, meaning);
-    private final static JPanel basicPanel = new JPanel();
+    private static JPanel basicPanel = new JPanel();
 
-    public BasicWindow(Owner owner, WordService wordService, ListService listService) {
+    public BasicWindow() {
         super("Easy Verbs");
-        setVisible(true);
-        this.wordService = wordService;
-        this.listService = listService;
-        id = owner.getId();
+    }
+
+    private void init() {
+        removeAll();
+        revalidate();
+        repaint();
+        mapWords = new HashMap<>();
+        first_form = new ArrayList<>();
+        second_form = new ArrayList<>();
+        third_form = new ArrayList<>();
+        meaning = new ArrayList<>();
+        model = new TableModel(first_form, second_form, third_form, meaning);
+        basicPanel = new JPanel();
+        list = null;
+    }
+
+    public void basicWindow(Owner owner) {
+        init();
         list = owner.getLists();
-        JLabel idOwner = new JLabel("id: " + id);
+        idOwner.setText("id: " + owner.getId());
 
         if (list == null) {
             list = listService.create(owner);
@@ -110,7 +134,6 @@ public class BasicWindow extends JFrame {
                             .addComponent(deleteWord)
                             .addComponent(saveList)
                     )
-
             );
         }
 
@@ -185,9 +208,8 @@ public class BasicWindow extends JFrame {
             @Override
             public void mousePressed(MouseEvent e) {
                 try {
-                    dispose();
                     setVisible(false);
-                    new StartWindow();
+                    startWindow.setVisible(true);
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }
@@ -213,6 +235,7 @@ public class BasicWindow extends JFrame {
                 }
             }
         });
+        setVisible(true);
     }
 
     private void clearArray() {

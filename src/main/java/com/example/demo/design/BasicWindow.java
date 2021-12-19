@@ -42,6 +42,7 @@ public class BasicWindow extends JFrame {
     private final static JPanel basicPanel = new JPanel();
 
     public BasicWindow(Owner owner, WordService wordService, ListService listService) {
+        super("Easy Verbs");
         setVisible(true);
         this.wordService = wordService;
         this.listService = listService;
@@ -49,15 +50,15 @@ public class BasicWindow extends JFrame {
         list = owner.getLists();
         JLabel idOwner = new JLabel("id: " + id);
 
-        if (mapWords.isEmpty()) {
+        if (list == null) {
             list = listService.create(owner);
-        } else {
+        }
+        if (!list.getWords().isEmpty()) {
             for (Word word : list.getWords()) {
                 mapWords.put(word.getFirst_form(), word);
             }
             setList(mapWords);
         }
-
         JTable table = new JTable(model);
         JScrollPane pane = new JScrollPane(table);
         pane.setPreferredSize(new Dimension(750, 400));
@@ -127,6 +128,7 @@ public class BasicWindow extends JFrame {
                     clearArray();
                     try {
                         Word word = wordService.findByWord(searchWord.getText());
+
                         if (!mapWords.containsKey(word.getFirst_form())) {
                             word = wordService.update(word, list);
                             list.setWord(word);
@@ -230,15 +232,6 @@ public class BasicWindow extends JFrame {
             meaning.add(word.getMeaning());
             model.fireTableDataChanged();
         }
-        /*
-        model.setCount(list.getWords().size());
-        for (Word word : list.getWords()) {
-            first_form.add(word.getFirst_form());
-            second_form.add(word.getSecond_form());
-            third_form.add(word.getThird_form());
-            meaning.add(word.getMeaning());
-            model.fireTableDataChanged();
-        }*/
     }
 
     public void saveTable(String nameFile) throws Exception {

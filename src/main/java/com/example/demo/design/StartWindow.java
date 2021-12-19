@@ -33,32 +33,32 @@ public class StartWindow extends JFrame {
     private final static JPanel createPanel = new JPanel();
 
     public StartWindow() {
+        super("Start Window");
         setVisible(true);
         add(getInsertPanel());
         setResizable(false);
         setSize(new Dimension(300, 200));
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
+        JFrame window = this;
         entry.addMouseListener(new MouseAdapter() {
+            Owner owner;
+
             @Override
             public void mouseClicked(MouseEvent e) {
                 try {
                     if (!insertLogin.getText().isEmpty()) {
-                        Owner owner;
                         owner = ownerService.findByName(insertLogin.getText());
                         if (owner != null) {
+                            window.dispose();
                             new BasicWindow(owner, wordService, listService);
-                            insertLogin.setText("");
-                            setVisible(false);
-                            dispose();
                         } else {
-                            JOptionPane.showMessageDialog(null, "Проверьте Логин!");
+                            JOptionPane.showMessageDialog(null, "Проверьте Логин !");
                         }
                     } else {
                         JOptionPane.showMessageDialog(null, "Некорректное имя!");
                     }
-
                 } catch (Exception exception) {
+                    exception.printStackTrace();
                     JOptionPane.showMessageDialog(null, "Проверьте Логин!");
                 }
             }
@@ -82,10 +82,10 @@ public class StartWindow extends JFrame {
                         owner = ownerService.findByName(createLogin.getText());
                         if (owner == null) {
                             owner = ownerService.create(createLogin.getText());
-                            new BasicWindow(owner, wordService, listService);
                             createLogin.setText("");
                             setVisible(false);
                             dispose();
+                            new BasicWindow(owner, wordService, listService);
                         } else {
                             JOptionPane.showMessageDialog(null, "Логин занят!");
                         }
@@ -96,7 +96,6 @@ public class StartWindow extends JFrame {
                     exception.printStackTrace();
                     JOptionPane.showMessageDialog(null, "Проверьте Логин! Возможно, он занят.");
                 }
-
             }
         });
     }
